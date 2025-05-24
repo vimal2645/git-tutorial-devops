@@ -1,25 +1,25 @@
-node {
-    def app
+pipeline {
+    agent any
 
-    stage('Clone repository') {
-        checkout scm
-    } 
-
-    stage('Build image') {
-        app = docker.build('edureka1/edureka')
-    }
-
-    stage('Test image') {
-        app.inside {
-            sh 'echo "Test passed"'
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build a Docker image with tag 'my-app:latest' from the current directory
+                    def customImage = docker.build("my-app:latest")
+                }
+            }
         }
-    }
 
-    stage('Push image') {
-        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    // Run a container from the built image, execute 'echo Hello World'
+                    docker.image('my-app:latest').inside {
+                        sh 'echo Hello from inside the container!'
+                    }
+                }
+            }
         }
     }
 }
-
