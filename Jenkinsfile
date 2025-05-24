@@ -1,25 +1,23 @@
 pipeline {
-    agent any
+  agent any
 
-    stages {
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Build a Docker image with tag 'my-app:latest' from the current directory
-                    def customImage = docker.build("my-app:latest")
-                }
-            }
+  stages {
+    stage('Build Docker Image') {
+      steps {
+        script {
+          bat 'docker build -t my-app:latest .'
         }
-
-        stage('Run Docker Container') {
-            steps {
-                script {
-                    // Run a container from the built image, execute 'echo Hello World'
-                    docker.image('my-app:latest').inside {
-                        sh 'echo Hello from inside the container!'
-                    }
-                }
-            }
-        }
+      }
     }
+
+    stage('Run Docker Container') {
+      steps {
+        script {
+          bat '''
+          docker run -d -w /app -v "%cd%:/app" my-app:latest
+          '''
+        }
+      }
+    }
+  }
 }
