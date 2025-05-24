@@ -1,15 +1,20 @@
+# Use official Node.js LTS version based on Alpine
+FROM node:18-alpine
 
-# Use an official lightweight base image (alpine is small and fast)
-FROM alpine:latest
-
-# Set a working directory inside the container
+# Set working directory inside container
 WORKDIR /app
 
-# Copy all files from your project repo into the container's /app directory
+# Copy package.json and package-lock.json (if exists)
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of your app source code
 COPY . .
 
-# (Optional) If you have any build commands, you can add them here, e.g.:
-# RUN apk add --no-cache bash
+# Expose the port your app listens on (e.g., 3000)
+EXPOSE 3000
 
-# Default command to run when container starts
-CMD ["sh", "-c", "echo Hello from my-app container!"]
+# Run your app (replace "start" with your actual start script)
+CMD ["npm", "start"]
