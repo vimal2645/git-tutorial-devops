@@ -1,1 +1,15 @@
+node {
+    def app
 
+    stage('Clone repository') {
+        checkout scm
+    }
+
+    stage('Build image') {
+        app = docker.build('edureka1/edureka')
+    }
+
+    stage('Test image') {
+        // Ideally, we would run a test framework against our image.
+    }
+}
